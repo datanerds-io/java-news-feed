@@ -22,9 +22,9 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
 /**
  * Simple consumer thread using subscribe pattern and auto-commit feature turned on.
  */
-public class SimpleConsumerThread implements Runnable {
+public class SimpleConsumer implements Runnable {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimpleConsumerThread.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleConsumer.class);
     private static final AtomicInteger CONSUMER_THREAD_SEQUENCE = new AtomicInteger(0);
     private final CountDownLatch latch = new CountDownLatch(1);
     private volatile boolean running = true;
@@ -36,7 +36,7 @@ public class SimpleConsumerThread implements Runnable {
     private Consumer<String, News> consumer;
     private final ExceptionHandler exceptionHandler;
 
-    public SimpleConsumerThread(String broker, String group, NewsConsumer consumer, ExceptionHandler exceptionHandler) {
+    public SimpleConsumer(String broker, String group, NewsConsumer consumer, ExceptionHandler exceptionHandler) {
         this.bootstrapServers = broker;
         this.groupId = group;
         this.newsConsumer = consumer;
@@ -80,10 +80,10 @@ public class SimpleConsumerThread implements Runnable {
         }
     }
 
-    private void relayMessage(ConsumerRecord<String, News> kafkaMessage) {
+    private void relayMessage(ConsumerRecord<String, News> kafkaRecord) {
         logger.info("Received message with key '{}' and offset '{}' on partition '{}' for topic '{}'",
-                kafkaMessage.key(), kafkaMessage.offset(), kafkaMessage.partition(), kafkaMessage.topic());
-        newsConsumer.consume(kafkaMessage.value());
+                kafkaRecord.key(), kafkaRecord.offset(), kafkaRecord.partition(), kafkaRecord.topic());
+        newsConsumer.consume(kafkaRecord.value());
     }
 
     private Consumer<String, News> createConsumer() {
@@ -91,7 +91,7 @@ public class SimpleConsumerThread implements Runnable {
         props.put(BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(GROUP_ID_CONFIG, groupId);
         props.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(ENABLE_AUTO_COMMIT_CONFIG, "true");
+        props.put(ENABLE_AUTO_COMMIT_CONFIG, true);
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(VALUE_DESERIALIZER_CLASS_CONFIG, NewsDeserializer.class);
 

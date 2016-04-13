@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 public class SimpleConsumerPool implements ExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleConsumerPool.class);
-    private final List<SimpleConsumerThread> consumerThreads = new ArrayList<>();
+    private final List<SimpleConsumer> consumers = new ArrayList<>();
     private final String bootstrapServers;
     private final String groupId;
     private ExecutorService pool;
@@ -28,19 +28,19 @@ public class SimpleConsumerPool implements ExceptionHandler {
         pool = Executors.newFixedThreadPool(newsConsumers.size());
 
         for (NewsConsumer newsConsumer : newsConsumers) {
-            SimpleConsumerThread consumer = new SimpleConsumerThread(bootstrapServers, groupId, newsConsumer, this);
-            consumerThreads.add(consumer);
+            SimpleConsumer consumer = new SimpleConsumer(bootstrapServers, groupId, newsConsumer, this);
+            consumers.add(consumer);
             pool.submit(consumer);
         }
     }
 
     public void stop() {
-        consumerThreads.forEach(SimpleConsumerThread::stop);
+        consumers.forEach(SimpleConsumer::stop);
         if (pool != null) {
             pool.shutdown();
         }
-        logger.info("Shutdown all {} threads of consumer pool", consumerThreads.size());
-        consumerThreads.clear();
+        logger.info("Shutdown all {} threads of consumer pool", consumers.size());
+        consumers.clear();
     }
 
     @Override
