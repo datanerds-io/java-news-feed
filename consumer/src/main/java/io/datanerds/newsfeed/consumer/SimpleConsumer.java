@@ -5,6 +5,7 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,7 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
 public class SimpleConsumer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleConsumer.class);
-    private static final AtomicInteger CONSUMER_THREAD_SEQUENCE = new AtomicInteger(0);
+    private static final AtomicInteger CONSUMER_SEQUENCE = new AtomicInteger(0);
     private final CountDownLatch latch = new CountDownLatch(1);
     private volatile boolean running = true;
     private static final int POLLING_TIMEOUT_MS = 500;
@@ -41,7 +42,7 @@ public class SimpleConsumer implements Runnable {
         this.groupId = group;
         this.newsConsumer = consumer;
         this.exceptionHandler = exceptionHandler;
-        this.name = String.format("%s[%s]", group, CONSUMER_THREAD_SEQUENCE.getAndIncrement());
+        this.name = String.format("%s[%s]", group, CONSUMER_SEQUENCE.getAndIncrement());
     }
 
     @Override
@@ -94,13 +95,16 @@ public class SimpleConsumer implements Runnable {
         props.put(ENABLE_AUTO_COMMIT_CONFIG, true);
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(VALUE_DESERIALIZER_CLASS_CONFIG, NewsDeserializer.class);
-
-        try {
-            props.put(CLIENT_ID_CONFIG, String.format("%s-%s", InetAddress.getLocalHost().getHostName(), name));
-        } catch (UnknownHostException ex) {
-            logger.warn("Could not resolve host name.", ex);
-        }
+        props.put(CLIENT_ID_CONFIG, getClientId());
 
         return new KafkaConsumer<>(props);
+    }
+
+    private String getClientId() {
+        try {
+            return String.format("%s-%s", InetAddress.getLocalHost().getHostName(), name);
+        } catch (UnknownHostException ex) {
+            throw new ConsumerException("Could not retrieve client identifier", ex);
+        }
     }
 }
