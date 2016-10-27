@@ -4,7 +4,7 @@ import io.datanerds.newsfeed.domain.News;
 
 public interface NewsConsumer {
     /**
-     * Implementations of this method should process the News and must be thread-safe.
+     * Implementations of this method should apply the News and must be thread-safe.
      *
      * @param news
      */

@@ -1,5 +1,6 @@
-package io.datanerds.newsfeed.consumer;
+package io.datanerds.newsfeed.consumer.simple;
 
+import io.datanerds.newsfeed.consumer.NewsConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

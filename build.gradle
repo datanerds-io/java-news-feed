@@ -30,7 +30,8 @@ subprojects {
         compile(
                 ["com.fasterxml.jackson.core:jackson-core:$jacksonVersion"],
                 ["com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"],
-                ["com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"]
+                ["com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"],
+                ["com.google.guava:guava:19.0"]
         )
     }
 }

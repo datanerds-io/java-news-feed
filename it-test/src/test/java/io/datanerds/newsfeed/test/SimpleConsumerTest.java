@@ -1,6 +1,6 @@
 package io.datanerds.newsfeed.test;
 
-import io.datanerds.newsfeed.consumer.SimpleConsumerPool;
+import io.datanerds.newsfeed.consumer.simple.SimpleConsumerPool;
 import io.datanerds.newsfeed.domain.News;
 import io.datanerds.newsfeed.producer.EmbeddedKafkaTest;
 import io.datanerds.newsfeed.producer.NewsProducer;

@@ -1,10 +1,14 @@
-package io.datanerds.newsfeed.consumer;
+package io.datanerds.newsfeed.consumer.simple;
 
+import io.datanerds.newsfeed.consumer.ConsumerException;
+import io.datanerds.newsfeed.consumer.NewsConsumer;
+import io.datanerds.newsfeed.consumer.NewsDeserializer;
 import io.datanerds.newsfeed.domain.News;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +17,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -49,6 +54,8 @@ public class SimpleConsumer implements Runnable {
             Thread.currentThread().setName(name);
             consumer = createConsumer();
             consumer.subscribe(Arrays.asList(newsConsumer.getTopic()));
+            Set<TopicPartition> assignment = consumer.assignment();
+
             logger.info("Started consumer thread {}", name);
             while (running) {
                 ConsumerRecords<String, News> records = consumer.poll(POLLING_TIMEOUT_MS);
