@@ -1,6 +1,5 @@
-package io.datanerds.newsfeed.consumer.fancy;
+package io.datanerds.newsfeed.consumer;
 
-import io.datanerds.newsfeed.consumer.simple.ExceptionHandler;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
@@ -38,6 +37,7 @@ public class BlockingQueueProcessor<K, V> implements Runnable {
                 consumer.apply(record.value());
                 offset.put(new TopicPartition(record.topic(), record.partition()),
                         new OffsetAndMetadata(record.offset()));
+
                 kafkaConsumer.commitAsync(offset, (offsets, ex) -> {
                     if (ex != null) {
                         logger.error("Something went wrong during offset commit", ex);

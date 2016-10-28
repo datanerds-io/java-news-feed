@@ -1,8 +1,6 @@
-package io.datanerds.newsfeed.consumer.fancy;
+package io.datanerds.newsfeed.consumer;
 
 import com.google.common.collect.Lists;
-import io.datanerds.newsfeed.consumer.ConsumerException;
-import io.datanerds.newsfeed.consumer.simple.ExceptionHandler;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -101,8 +99,7 @@ public class BlockingQueueKafkaConsumer<K, V> implements ExceptionHandler {
     private void createProcessor() {
         ArrayBlockingQueue<ConsumerRecord<K, V>> queue = new ArrayBlockingQueue<>(QUEUE_SIZE);
         BlockingQueueProcessor<K, V> processor = new BlockingQueueProcessor<>(kafkaConsumer, this.action, queue, this);
-        pool.submit(processor);
-        pool.invokeAll()
+        pool.execute(processor);
     }
 
     private Consumer<K, V> createConsumer() {
@@ -110,7 +107,7 @@ public class BlockingQueueKafkaConsumer<K, V> implements ExceptionHandler {
         props.put(BOOTSTRAP_SERVERS_CONFIG, brokerBootstrap);
         props.put(GROUP_ID_CONFIG, groupId);
         props.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(ENABLE_AUTO_COMMIT_CONFIG, true);
+        props.put(ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, keyDeserializer);
         props.put(VALUE_DESERIALIZER_CLASS_CONFIG, valueDeserializer);
         props.put(CLIENT_ID_CONFIG, getClientId());

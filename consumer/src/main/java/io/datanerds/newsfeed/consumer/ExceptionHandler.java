@@ -1,4 +1,4 @@
-package io.datanerds.newsfeed.consumer.simple;
+package io.datanerds.newsfeed.consumer;
 
 @FunctionalInterface
 public interface ExceptionHandler {

@@ -1,4 +1,4 @@
-package io.datanerds.newsfeed.consumer.fancy;
+package io.datanerds.newsfeed.consumer;
 
 @FunctionalInterface
 public interface Action<T> {

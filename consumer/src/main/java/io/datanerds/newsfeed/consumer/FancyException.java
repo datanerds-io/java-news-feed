@@ -1,4 +1,4 @@
-package io.datanerds.newsfeed.consumer.fancy;
+package io.datanerds.newsfeed.consumer;
 
 public class FancyException extends RuntimeException {
     public FancyException(String message) {

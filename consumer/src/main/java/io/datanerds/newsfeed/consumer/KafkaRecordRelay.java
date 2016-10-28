@@ -1,4 +1,4 @@
-package io.datanerds.newsfeed.consumer.fancy;
+package io.datanerds.newsfeed.consumer;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;

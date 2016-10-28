@@ -1,6 +1,7 @@
 package io.datanerds.newsfeed.producer;
 
 import kafka.admin.AdminUtils;
+import kafka.admin.RackAwareMode;
 import kafka.api.FixedPortTestUtils;
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaServer;
@@ -54,7 +55,7 @@ public class EmbeddedKafkaTest {
     protected void createTopic(String topic) {
         Properties properties = new Properties();
         properties.put("cleanup.policy", "compact");
-        AdminUtils.createTopic(zkUtils, topic, 1, 1, properties);
+        AdminUtils.createTopic(zkUtils, topic, 1, 1, properties, RackAwareMode.Disabled$.MODULE$);
         TestUtils.waitUntilMetadataIsPropagated(scala.collection.JavaConversions.asScalaBuffer(servers), topic, 0,
                 10000);
     }

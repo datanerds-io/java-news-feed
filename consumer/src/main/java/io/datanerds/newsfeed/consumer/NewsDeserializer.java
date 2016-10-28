@@ -14,7 +14,7 @@ public class NewsDeserializer implements Deserializer<News> {
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
-
+        //nop
     }
 
     @Override
@@ -28,6 +28,6 @@ public class NewsDeserializer implements Deserializer<News> {
 
     @Override
     public void close() {
-
+        //nop
     }
 }
